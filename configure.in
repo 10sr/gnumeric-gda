@@ -426,20 +426,20 @@ AC_ARG_WITH(gda,
 	fi
 )
 if test "$try_gda" = true; then
-	PKG_CHECK_MODULES(GDA, [libgda-4.0 >= 4.1.1],
+	PKG_CHECK_MODULES(GDA, [libgda-5.0 >= 5.0],
 		[gda_msg=yes],
 		[gda_msg="NO.  libgda problem"])
-	AC_CHECK_HEADER(libgda/control-center/gdaui-login-dialog.h,
-			[],
-			[gda_msg="NO.  libgda problem"])
-	if test "$gda_msg" = yes; then
-		PKG_CHECK_MODULES(GNOMEDB, [libgnomedb-4.0 >= 3.99.6],
-			[gnomedb_msg="yes"],
-			[gnomedb_msg="NO. libgnomedb problem"])
-		if test "$gnomedb_msg" = yes; then
-			AC_DEFINE(HAVE_LIBGNOMEDB, 1, [ Define if libgnomedb support is compiled in])
-		fi
-	fi
+	# AC_CHECK_HEADER(libgda-5.0/libgda-ui/gdaui-login.h,
+	# 		[],
+	# 		[gda_msg="NO.  libgda problem"])
+	# if test "$gda_msg" = yes; then
+	# 	PKG_CHECK_MODULES(GNOMEDB, [libgnomedb-4.0 >= 3.99.6],
+	# 		[gnomedb_msg="yes"],
+	# 		[gnomedb_msg="NO. libgnomedb problem"])
+	# 	if test "$gnomedb_msg" = yes; then
+	# 		AC_DEFINE(HAVE_LIBGNOMEDB, 1, [ Define if libgnomedb support is compiled in])
+	# 	fi
+	# fi
 fi
 AM_CONDITIONAL(WITH_GDA, test x"$gda_msg" = xyes)
 AC_SUBST(GDA_CFLAGS)

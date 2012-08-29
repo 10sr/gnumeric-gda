@@ -23,7 +23,7 @@
 #include <gnumeric.h>
 #include <libgda.h>
 #include <sql-parser/gda-sql-parser.h>
-#include <libgda-ui/libgda-ui.h>
+#include <libgda-ui/gdaui-login.h>
 #include <string.h>
 
 #include "func.h"
