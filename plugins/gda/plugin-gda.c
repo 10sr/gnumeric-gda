@@ -21,9 +21,9 @@
 
 #include <gnumeric-config.h>
 #include <gnumeric.h>
-#include <libgda/libgda.h>
-#include <libgda/control-center/gdaui-login-dialog.h>
+#include <libgda.h>
 #include <sql-parser/gda-sql-parser.h>
+#include <libgda-ui/libgda-ui.h>
 #include <string.h>
 
 #include "func.h"
