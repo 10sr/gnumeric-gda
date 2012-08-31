@@ -226,7 +226,7 @@ static GdaConnection *
 open_connection (const gchar *dsn, const gchar *user, const gchar *password, GdaConnectionOptions options)
 {
 	GdaConnection *cnc = NULL;
-	gchar *real_dsn, *real_user, *real_password;
+	/* gchar *real_dsn, *real_user, *real_password; */
 	GError *error = NULL;
 
 	/* initialize connection pool if first time */
@@ -253,37 +253,50 @@ open_connection (const gchar *dsn, const gchar *user, const gchar *password, Gda
 
 	if (!cnc) {
 		CncKey *key;
-		gchar *auth, *tmp1, *tmp2;
+		/* gchar *auth, *tmp1, *tmp2; */
 
-		GtkWidget    *dialog = gdaui_login_dialog_new (_("Database Connection"), NULL); /* FIXME: pass a pointer to parent window */
-		GnomeDbLogin *login  = gdaui_login_dialog_get_login_widget (GDAUI_LOGIN_DIALOG (dialog));
-		gnome_db_login_set_dsn (login, dsn);
-		gnome_db_login_set_username (login, user);
-		gnome_db_login_set_password (login, password);
-		if (gdaui_login_dialog_run (GDAUI_LOGIN_DIALOG (dialog))) {
-			real_dsn = g_strdup (gdauilogin_get_dsn (login));
-			real_user = g_strdup (gdauilogin_get_username (login));
-			real_password = g_strdup (gdauilogin_get_password (login));
-			gtk_widget_destroy (dialog);
-		} else {
-			gtk_widget_destroy (dialog);
-			return NULL;
-		}
-		tmp1 = gda_rfc1738_encode (real_user);
-		tmp2 = gda_rfc1738_encode (real_password);
-		auth = g_strdup_printf ("USERNAME=%s;PASSWORD=%s", tmp1, tmp2);
-		g_free (tmp1);
-		g_free (tmp2);
-		cnc = gda_connection_open_from_dsn (real_dsn, auth, options, &error);
+		/* GtkWidget    *dialog = gdaui_login_dialog_new (_("Database Connection"), NULL); /\* FIXME: pass a pointer to parent window *\/ */
+
+		/* GnomeDbLogin *login  = gdaui_login_dialog_get_login_widget (GDAUI_LOGIN_DIALOG (dialog)); */
+		/* gnome_db_login_set_dsn (login, dsn); */
+		/* gnome_db_login_set_username (login, user); */
+		/* gnome_db_login_set_password (login, password); */
+		/* if (gdaui_login_dialog_run (GDAUI_LOGIN_DIALOG (dialog))) { */
+		/* 	real_dsn = g_strdup (gdauilogin_get_dsn (login)); */
+		/* 	real_user = g_strdup (gdauilogin_get_username (login)); */
+		/* 	real_password = g_strdup (gdauilogin_get_password (login)); */
+		/* 	gtk_widget_destroy (dialog); */
+		/* } else { */
+		/* 	gtk_widget_destroy (dialog); */
+		/* 	return NULL; */
+		/* } */
+		/* tmp1 = gda_rfc1738_encode (real_user); */
+		/* tmp2 = gda_rfc1738_encode (real_password); */
+		/* auth = g_strdup_printf ("USERNAME=%s;PASSWORD=%s", tmp1, tmp2); */
+		/* g_free (tmp1); */
+		/* g_free (tmp2); */
+
+		/* cnc = gda_connection_open_from_dsn (real_dsn, auth, options, &error); */
+		/* if (!cnc) { */
+		/* 	g_warning ("Libgda error: %s\n", error->message); */
+		/* 	g_error_free (error); */
+		/* } */
+
+		/* g_free (real_dsn); */
+		/* g_free (real_user); */
+		/* g_free (real_password); */
+		/* g_free (auth); */
+
+		GtkWidget    *dialog = gdaui_login_new (dsn);
+		const GdaDsnInfo *login;
+		gdaui_login_set_dsn (GDAUI_LOGIN(dialog), dsn);
+		login = gdaui_login_get_connection_information (GDAUI_LOGIN(dialog));
+		cnc = gda_connection_open_from_dsn (login->name, login->auth_string, options, &error);
+
 		if (!cnc) {
 			g_warning ("Libgda error: %s\n", error->message);
 			g_error_free (error);
 		}
-
-		g_free (real_dsn);
-		g_free (real_user);
-		g_free (real_password);
-		g_free (auth);
 
 		key = g_new0 (CncKey, 1);
 		if (dsn)
@@ -490,11 +503,11 @@ ModulePluginUIActions const gdaif_ui_actions[] = {
 
 GnmFuncDescriptor gdaif_functions[] = {
 	{
-		"execSQL",	"ssss", "dsn,username,password,sql",
+		"execSQL",	"ssss", /* "dsn,username,password,sql", */
 		help_execSQL, &gnumeric_execSQL, NULL, NULL, NULL
 	},
 	{
-		"readDBTable", "ssss", "dsn,username,password,table",
+		"readDBTable", "ssss", /* "dsn,username,password,table", */
 		help_readDBTable, &gnumeric_readDBTable, NULL, NULL, NULL
 	},
 	{NULL}
