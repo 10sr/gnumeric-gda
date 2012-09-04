@@ -23,7 +23,7 @@
 #include <gnumeric.h>
 #include <libgda.h>
 #include <sql-parser/gda-sql-parser.h>
-#include <libgda-ui/gdaui-login.h>
+/* #include <libgda-ui/gdaui-login.h> */
 #include <string.h>
 
 #include "func.h"
@@ -253,7 +253,7 @@ open_connection (const gchar *dsn, const gchar *user, const gchar *password, Gda
 
 	if (!cnc) {
 		CncKey *key;
-		/* gchar *auth, *tmp1, *tmp2; */
+		gchar *auth, *tmp1, *tmp2;
 
 		/* GtkWidget    *dialog = gdaui_login_dialog_new (_("Database Connection"), NULL); /\* FIXME: pass a pointer to parent window *\/ */
 
@@ -287,11 +287,21 @@ open_connection (const gchar *dsn, const gchar *user, const gchar *password, Gda
 		/* g_free (real_password); */
 		/* g_free (auth); */
 
-		GtkWidget    *dialog = gdaui_login_new (dsn);
-		const GdaDsnInfo *login;
-		gdaui_login_set_dsn (GDAUI_LOGIN(dialog), dsn);
-		login = gdaui_login_get_connection_information (GDAUI_LOGIN(dialog));
-		cnc = gda_connection_open_from_dsn (login->name, login->auth_string, options, &error);
+		/* GtkWidget    *dialog = gdaui_login_new (dsn); */
+		/* const GdaDsnInfo *login; */
+		/* gdaui_login_set_dsn (GDAUI_LOGIN(dialog), dsn); */
+		/* login = gdaui_login_get_connection_information (GDAUI_LOGIN(dialog)); */
+
+		/* if(login->name == NULL){ puts("login->name is NULL.");} */
+		/* if(login->auth_string == NULL) { puts ("login->auth_string is NULL.");} */
+
+		tmp1 = gda_rfc1738_encode (user);
+		tmp2 = gda_rfc1738_encode (password);
+		auth = g_strdup_printf ("USERNAME=%s;PASSWORD=%s", tmp1, tmp2);
+		g_free (tmp1);
+		g_free (tmp2);
+		cnc = gda_connection_open_from_dsn (dsn, auth, options, &error);
+		g_free (auth);
 
 		if (!cnc) {
 			g_warning ("Libgda error: %s\n", error->message);
